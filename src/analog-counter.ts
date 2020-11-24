@@ -65,7 +65,7 @@ export default class Counter {
         this.backgroundColor = conf.backgroundColor != undefined ? config.backgroundColor : 0xffffff;
         this.fontColor = conf.fontColor != undefined ? config.fontColor : '#000000';
         this.fontSize = conf.fontSize || 24;
-        this.padding = conf.padding || Math.ceil(this.fontSize / 2);
+        this.padding = conf.padding || Math.round(this.fontSize / 2);
         this.digits = conf.digits || 6;
         this.height = conf.height || this.fontSize * 2;
         if(this.height > this.fontSize * 2){
