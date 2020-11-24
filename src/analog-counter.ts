@@ -1,6 +1,6 @@
 /// <reference path="../node_modules/phaser/types/phaser.d.ts" />
 
-export default class Counter {
+export default class AnalogCounter {
     scene: Phaser.Scene;
     /**
      * X position of counter in pixels
