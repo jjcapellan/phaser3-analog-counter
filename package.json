@@ -8,7 +8,6 @@
   "source": "src/analog-counter.ts",  
   "types": "dist/analog-counter.d.ts",
   "scripts": {
-    "build:dev": "microbundle -f umd --name AnalogCounter",
     "build:dist": "microbundle -f cjs,umd,es --name AnalogCounter --sourcemap false",
     "dev": "microbundle watch -f umd --name AnalogCounter"
   },
