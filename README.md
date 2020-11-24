@@ -1,3 +1,5 @@
+![GitHub tag (latest by date)](https://img.shields.io/github/tag-date/jjcapellan/phaser3-analog-counter.svg)
+![GitHub license](https://img.shields.io/github/license/jjcapellan/phaser3-analog-counter.svg)
 # Phaser3-analog-counter
 Class to use with Phaser 3 to show numbers in a "realistic" analog counter display.  
 **Try demo here**: https://jjcapellan.github.io/phaser3-analog-counter/  
