@@ -68,6 +68,9 @@ export default class Counter {
         this.padding = conf.padding || Math.ceil(this.fontSize / 2);
         this.digits = conf.digits || 6;
         this.height = conf.height || this.fontSize * 2;
+        if(this.height > this.fontSize * 2){
+            this.height = this.fontSize * 2;
+        }
         this.width = conf.width || this.digits * (this.fontSize + 4);
         this.shade = conf.shade != undefined ? conf.shade : 0.9;
 
