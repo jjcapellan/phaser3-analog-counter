@@ -133,7 +133,12 @@ interface CounterConfig {
     /**
      * Alpha value of shade effect. 0 disables this effect. Default 0.9.
      */
-    shade?: number
+    shade?: number,
+    
+    /**
+     * Time interval in milliseconds until reach a number. Default: 1000.
+     */
+    duration?: number;
 }
 ```  
 ## License

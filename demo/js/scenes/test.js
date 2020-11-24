@@ -9,7 +9,7 @@ class Test extends Phaser.Scene {
 
     const counter = new AnalogCounter(this, 200, 50);
     const counter1 = new AnalogCounter(this, 200, 125, { backgroundColor: 0xcc0000, fontColor: '#ffffff', digits: 3 });
-    const counter2 = new AnalogCounter(this, 200, 200, { backgroundColor: 0x0000cc, fontColor: '#ffffff', digits: 2 });
+    const counter2 = new AnalogCounter(this, 200, 200, { duration: 500, backgroundColor: 0x0000cc, fontColor: '#ffffff', digits: 2 });
 
     counter.setOrigin(0.5);
 

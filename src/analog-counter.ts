@@ -42,6 +42,10 @@ export default class Counter {
      * Alpha value of shade effect. 0 disables this effect. Default 0.9.
      */
     readonly shade: number;
+    /**
+     * Time interval in milliseconds until reach a number. Default: 1000.
+     */
+    duration: number;
 
     private gap: number;
     private renderTextureWidth: number;
@@ -73,6 +77,7 @@ export default class Counter {
         }
         this.width = conf.width || this.digits * (this.fontSize + 4);
         this.shade = conf.shade != undefined ? conf.shade : 0.9;
+        this.duration = conf.duration != undefined ? conf.duration : 1000;
 
         this.oX = this.x - this.originX * this.width;
         this.oY = this.y - this.originY * this.height;
@@ -199,6 +204,8 @@ export default class Counter {
      * @param number Integer to set the new number
      */
     setNumber(number: number) {
+        const duration = this.duration;
+
         let numberStr = number.toString();
         numberStr = numberStr.padStart(this.digits, '0');
         let nums = numberStr.split('');
@@ -214,7 +221,7 @@ export default class Counter {
                 let tween = this.scene.tweens.add({
                     targets: target,
                     y: originY - num * gap,
-                    duration: 1000,
+                    duration: duration,
                     ease: 'Power2',
                     onComplete: () => {
                         tween.stop();
@@ -316,4 +323,8 @@ interface CounterConfig {
      * Alpha value of shade effect. 0 disables this effect. Default 0.9.
      */
     shade?: number
+    /**
+     * Time interval in milliseconds until reach a number. Default: 1000.
+     */
+    duration?: number;
 }
