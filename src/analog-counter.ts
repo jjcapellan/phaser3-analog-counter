@@ -48,6 +48,7 @@ export default class Counter {
     private digitsArray: Phaser.GameObjects.RenderTexture[];
     private renderTextureHeight: number;
     private mask: Phaser.Display.Masks.GeometryMask;
+    private maskShape: Phaser.GameObjects.Graphics;
     private shadeOverlay: Phaser.GameObjects.RenderTexture;
 
     constructor(scene: Phaser.Scene, x: number, y: number, config: CounterConfig) {
@@ -85,8 +86,8 @@ export default class Counter {
     }
 
     initMask() {
-        let maskShape = this.scene.make.graphics({}).fillStyle(0xffffff).fillRect(this.x, this.y, this.width, this.height);
-        this.mask = maskShape.createGeometryMask();
+        this.maskShape = this.scene.make.graphics({}).fillStyle(0xffffff).fillRect(this.x, this.y, this.width, this.height);
+        this.mask = this.maskShape.createGeometryMask();
     }
 
     initDigitsArray() {
@@ -189,6 +190,38 @@ export default class Counter {
 
         halfRt.destroy();
         graphics.destroy();
+    }
+
+    /**
+     * Sets counter screen position
+     * @param x Position x in pixels
+     * @param y Position y in pixels
+     */
+    setPosition(x?: number, y?: number){
+        let deltaX = 0;
+        let deltaY = 0;
+        if(x != undefined){
+            deltaX = x - this.x;
+            this.x = x;
+        }
+        if(y != undefined){
+            deltaY = y - this.y;
+            this.y = y;
+        }
+
+        // Render texture digits position
+        this.digitsArray.forEach((rt) => {
+            rt.x += deltaX,
+            rt.y += deltaY
+        });
+        // Shade position
+        if(this.shade){
+            this.shadeOverlay.setPosition(this.x, this.y);
+        }
+        //Mask position
+        this.mask.geometryMask.x += deltaX;
+        this.mask.geometryMask.y += deltaY;
+
     }
 }
 
