@@ -1,7 +1,7 @@
 {
-  "name": "phaser-analog-counter",
+  "name": "phaser3-analog-counter",
   "version": "1.0.0",
-  "description": "",
+  "description": "Class to use with Phaser 3 to show numbers in an analog counter display",
   "main": "dist/analog-counter.js",
   "umd:main": "dist/analog-counter.umd.js",
   "module": "dist/analog-counter.esm.js",
@@ -22,6 +22,11 @@
   "homepage": "https://github.com/jjcapellan/phaser3-analog-counter#readme",
   "author": "Juan Jose Capellan",
   "license": "MIT",
+  "keywords": [
+    "phaser3",
+    "counter",
+    "analog"
+  ],
   "devDependencies": {
     "microbundle": "^0.12.4",
     "phaser": "^3.24.1"
