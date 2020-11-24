@@ -1,0 +1,29 @@
+{
+  "name": "phaser-analog-counter",
+  "version": "1.0.0",
+  "description": "",
+  "main": "dist/analog-counter.js",
+  "umd:main": "dist/analog-counter.umd.js",
+  "module": "dist/analog-counter.esm.js",
+  "source": "src/analog-counter.ts",  
+  "types": "dist/analog-counter.d.ts",
+  "scripts": {
+    "build:dev": "microbundle -f umd --name AnalogCounter",
+    "build:dist": "microbundle -f cjs,umd,es --name AnalogCounter --sourcemap false",
+    "dev": "microbundle watch -f umd --name AnalogCounter"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/jjcapellan/phaser3-analog-counter.git"
+  },
+  "bugs": {
+    "url": "https://github.com/jjcapellan/phaser3-analog-counter/issues"
+  },
+  "homepage": "https://github.com/jjcapellan/phaser3-analog-counter#readme",
+  "author": "Juan Jose Capellan",
+  "license": "MIT",
+  "devDependencies": {
+    "microbundle": "^0.12.4",
+    "phaser": "^3.24.1"
+  }
+}
