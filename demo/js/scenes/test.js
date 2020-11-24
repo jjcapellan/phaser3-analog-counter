@@ -3,22 +3,25 @@ class Test extends Phaser.Scene {
     super('test');
   }
 
-  create(){
-      let x = this.game.config.width/2 - 3 * 50;
-      let y = this.game.config.height/2 - 2 * 25;
-      this.camera1 = this.cameras.add(x, y, 6 * 50, 4 * 25)
-      .setOrigin(0);
-      this.camera1.setScroll(2000, 0);
+  create() {
 
-      const counter = new AnalogCounter(this, 100, 50);
-      const counter1 = new AnalogCounter(this, 100, 150, {backgroundColor: 0xcc0000, fontColor: '#ffffff', digits: 3});
-      const counter2 = new AnalogCounter(this, 100, 250, {backgroundColor: 0x0000cc, fontColor: '#ffffff', digits: 2});
+    this.add.text(200, 260, 'Click on screen').setOrigin(0.5);
 
-      counter2.setPosition(25, 150);
+    const counter = new AnalogCounter(this, 200, 50);
+    const counter1 = new AnalogCounter(this, 200, 125, { backgroundColor: 0xcc0000, fontColor: '#ffffff', digits: 3 });
+    const counter2 = new AnalogCounter(this, 200, 200, { backgroundColor: 0x0000cc, fontColor: '#ffffff', digits: 2 });
 
+    counter.setOrigin(0.5);
 
-      counter.setNumber(1925);
-      counter1.setNumber(162);
+    counter1.setOrigin(0.5);
+
+    counter2.setOrigin(0.5);
+
+    this.input.on('pointerdown', () => {
+      counter.setNumber(Phaser.Math.Between(10, 999999));
+      counter1.setNumber(Phaser.Math.Between(1, 999));
+      counter2.setNumber(Phaser.Math.Between(1, 99));
+    });
 
   }
 }

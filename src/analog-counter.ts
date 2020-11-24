@@ -50,6 +50,10 @@ export default class Counter {
     private mask: Phaser.Display.Masks.GeometryMask;
     private maskShape: Phaser.GameObjects.Graphics;
     private shadeOverlay: Phaser.GameObjects.RenderTexture;
+    private originX: number = 0;
+    private originY: number = 0;
+    private oX: number;
+    private oY: number;
 
     constructor(scene: Phaser.Scene, x: number, y: number, config: CounterConfig) {
         this.scene = scene;
@@ -66,6 +70,9 @@ export default class Counter {
         this.height = conf.height || this.fontSize * 2;
         this.width = conf.width || this.digits * (this.fontSize + 4);
         this.shade = conf.shade != undefined ? conf.shade : 0.9;
+
+        this.oX = this.x - this.originX * this.width;
+        this.oY = this.y - this.originY * this.height;
 
         this.init();
     }
@@ -86,7 +93,9 @@ export default class Counter {
     }
 
     initMask() {
-        this.maskShape = this.scene.make.graphics({}).fillStyle(0xffffff).fillRect(this.x, this.y, this.width, this.height);
+        this.maskShape = this.scene.make.graphics({})
+        .fillStyle(0xffffff)
+        .fillRect(this.oX, this.y, this.width, this.height);
         this.mask = this.maskShape.createGeometryMask();
     }
 
@@ -97,7 +106,7 @@ export default class Counter {
 
         for (let i = 0; i < this.digits; i++) {
             // Create one render texture for each digit
-            let rt = this.scene.add.renderTexture(this.x + i * this.renderTextureWidth, this.y, this.renderTextureWidth, this.renderTextureHeight)
+            let rt = this.scene.add.renderTexture(this.oX + i * this.renderTextureWidth, this.oY, this.renderTextureWidth, this.renderTextureHeight)
                 .setOrigin(0);
 
             // Adds background
@@ -148,7 +157,7 @@ export default class Counter {
         let numberStr = number.toString();
         numberStr = numberStr.padStart(this.digits, '0');
         let nums = numberStr.split('');
-        const originY = this.y;
+        const originY = this.oY;
 
         nums.forEach((digit: string, index: number) => {
             let num = parseInt(digit);
@@ -171,7 +180,7 @@ export default class Counter {
     } // End setNumber
 
     makeShade(alpha: number) {
-        this.shadeOverlay = this.scene.add.renderTexture(this.x, this.y, this.width, this.height);
+        this.shadeOverlay = this.scene.add.renderTexture(this.oX, this.y, this.width, this.height);
 
         let halfRt = this.scene.make.renderTexture({ width: this.width, height: this.height / 2 }).setOrigin(0);
         let graphics = this.scene.make.graphics({});
@@ -193,6 +202,22 @@ export default class Counter {
     }
 
     /**
+     * Sets object relative origin
+     * @param originX Number between 0 and 1. 0: left, 0.5: center, 1: right
+     * @param originY Number between 0 and 1. 0: top, 0.5: center, 1: bottom
+     */
+    setOrigin(originX: number, originY: number){
+        if(originY == undefined){
+            this.originX = originX;
+            this.originY = originX;
+        } else {
+            this.originX = originX;
+            this.originY = originY;
+        }
+        this.setPosition(this.x, this.y);
+    }
+
+    /**
      * Sets counter screen position
      * @param x Position x in pixels
      * @param y Position y in pixels
@@ -201,12 +226,16 @@ export default class Counter {
         let deltaX = 0;
         let deltaY = 0;
         if(x != undefined){
-            deltaX = x - this.x;
+            let newoX = x - this.originX * this.width;
+            deltaX = newoX - this.oX;
             this.x = x;
+            this.oX = newoX;
         }
         if(y != undefined){
-            deltaY = y - this.y;
+            let newoY = y - this.originY * this.height;
+            deltaY = newoY - this.oY;
             this.y = y;
+            this.oY = newoY;
         }
 
         // Render texture digits position
@@ -216,7 +245,7 @@ export default class Counter {
         });
         // Shade position
         if(this.shade){
-            this.shadeOverlay.setPosition(this.x, this.y);
+            this.shadeOverlay.setPosition(this.oX, this.oY);
         }
         //Mask position
         this.mask.geometryMask.x += deltaX;
