@@ -5,43 +5,43 @@ export default class Counter {
     /**
      * X position of counter in pixels
      */
-    x: number;
+    private x: number;
     /**
      * Y position of counter in pixels
      */
-    y: number;
+    private y: number;
     /**
      * Width of counter in pixels. Default: digits * (fontSize + 4)
      */
-    width: number;
+    readonly width: number;
     /**
-     * Height of counter in pixels. Default: fontSize * 3
+     * Height of counter in pixels. Default: fontSize * 2
      */
-    height: number;
+    readonly height: number;
     /**
      * Number of digits of counter. Default: 6
      */
-    digits: number;
+    readonly digits: number;
     /**
      * Vertical space between digits in pixels. Default: fontSize/2
      */
-    padding: number;
+    readonly padding: number;
     /**
      * CSS property "fontSize" of the font used to make the digits. Default: 24
      */
-    fontSize: number;
+    readonly fontSize: number;
     /**
      * Color of font in html format (example: '#ff00ff'). Default: '#000000'
      */
-    fontColor: string;
+    readonly fontColor: string;
     /**
      * Color of background in hex format (example: 0xff00ff). Default: 0xffffff
      */
-    backgroundColor: number;
+    readonly backgroundColor: number;
     /**
      * Alpha value of shade effect. 0 disables this effect. Default 0.9.
      */
-    shade: number;
+    readonly shade: number;
 
     private gap: number;
     private renderTextureWidth: number;
@@ -68,7 +68,7 @@ export default class Counter {
         this.padding = conf.padding || Math.round(this.fontSize / 2);
         this.digits = conf.digits || 6;
         this.height = conf.height || this.fontSize * 2;
-        if(this.height > this.fontSize * 2){
+        if (this.height > this.fontSize * 2) {
             this.height = this.fontSize * 2;
         }
         this.width = conf.width || this.digits * (this.fontSize + 4);
@@ -78,9 +78,23 @@ export default class Counter {
         this.oY = this.y - this.originY * this.height;
 
         this.init();
+    } // End constructor
+
+
+
+    private getBackground(): Phaser.GameObjects.Graphics {
+        let graphics = this.scene.add.graphics();
+        graphics.lineStyle(1, 0x000000, 0.9);
+        graphics.fillStyle(this.backgroundColor, 1);
+        graphics.fillRect(0, 0, this.renderTextureWidth, this.renderTextureHeight);
+        graphics.strokeRect(0, 0, this.renderTextureWidth, this.renderTextureHeight);
+
+        return graphics;
     }
 
-    init() {
+
+
+    private init() {
 
         this.gap = Math.ceil(this.padding + this.fontSize / 2);
         this.renderTextureWidth = Math.ceil(this.width / this.digits);
@@ -95,14 +109,9 @@ export default class Counter {
         }
     }
 
-    initMask() {
-        this.maskShape = this.scene.make.graphics({})
-        .fillStyle(0xffffff)
-        .fillRect(this.oX, this.y, this.width, this.height);
-        this.mask = this.maskShape.createGeometryMask();
-    }
 
-    initDigitsArray() {
+
+    private initDigitsArray() {
         this.digitsArray = [];
         let background = this.getBackground();
         const style = { fontFamily: 'Arial', fontSize: this.fontSize, fontStyle: 'bold', color: this.fontColor };
@@ -146,16 +155,49 @@ export default class Counter {
 
     }// End initDigitsArray
 
-    getBackground(): Phaser.GameObjects.Graphics {
-        let graphics = this.scene.add.graphics();
-        graphics.lineStyle(1, 0x000000, 0.9);
-        graphics.fillStyle(this.backgroundColor, 1);
-        graphics.fillRect(0, 0, this.renderTextureWidth, this.renderTextureHeight);
-        graphics.strokeRect(0, 0, this.renderTextureWidth, this.renderTextureHeight);
 
-        return graphics;
+
+    private initMask() {
+        this.maskShape = this.scene.make.graphics({})
+            .fillStyle(0xffffff)
+            .fillRect(this.oX, this.y, this.width, this.height);
+        this.mask = this.maskShape.createGeometryMask();
     }
 
+
+
+    private makeShade(alpha: number) {
+        this.shadeOverlay = this.scene.add.renderTexture(this.oX, this.y, this.width, this.height);
+
+        let halfRt = this.scene.make.renderTexture({ width: this.width, height: this.height / 2 }).setOrigin(0);
+        let graphics = this.scene.make.graphics({});
+        graphics.fillStyle(0x000000, alpha);
+        graphics.fillRect(0, 0, this.width, this.height / 2);
+
+        halfRt.draw(graphics, 0, 0);
+
+        // Top half shade
+        halfRt.setAlpha(1, 1, 0, 0);
+        this.shadeOverlay.draw(halfRt, 0, 0);
+
+        // Bottom half shade
+        halfRt.setAlpha(0, 0, 1, 1);
+        this.shadeOverlay.draw(halfRt, 0, this.height / 2);
+
+        halfRt.destroy();
+        graphics.destroy();
+    }
+
+
+
+
+
+    //// PUBLIC METHODS
+
+    /**
+     * Sets a new number as target of the animation
+     * @param number Integer to set the new number
+     */
     setNumber(number: number) {
         let numberStr = number.toString();
         numberStr = numberStr.padStart(this.digits, '0');
@@ -182,35 +224,15 @@ export default class Counter {
         }); // End foreach
     } // End setNumber
 
-    makeShade(alpha: number) {
-        this.shadeOverlay = this.scene.add.renderTexture(this.oX, this.y, this.width, this.height);
 
-        let halfRt = this.scene.make.renderTexture({ width: this.width, height: this.height / 2 }).setOrigin(0);
-        let graphics = this.scene.make.graphics({});
-        graphics.fillStyle(0x000000, alpha);
-        graphics.fillRect(0, 0, this.width, this.height / 2);
-
-        halfRt.draw(graphics, 0, 0);
-
-        // Top half shade
-        halfRt.setAlpha(1, 1, 0, 0);
-        this.shadeOverlay.draw(halfRt, 0, 0);
-
-        // Bottom half shade
-        halfRt.setAlpha(0, 0, 1, 1);
-        this.shadeOverlay.draw(halfRt, 0, this.height / 2);
-
-        halfRt.destroy();
-        graphics.destroy();
-    }
 
     /**
-     * Sets object relative origin
+     * Sets relative origin
      * @param originX Number between 0 and 1. 0: left, 0.5: center, 1: right
      * @param originY Number between 0 and 1. 0: top, 0.5: center, 1: bottom
      */
-    setOrigin(originX: number, originY: number){
-        if(originY == undefined){
+    setOrigin(originX: number, originY: number) {
+        if (originY == undefined) {
             this.originX = originX;
             this.originY = originX;
         } else {
@@ -220,21 +242,23 @@ export default class Counter {
         this.setPosition(this.x, this.y);
     }
 
+
+
     /**
      * Sets counter screen position
      * @param x Position x in pixels
      * @param y Position y in pixels
      */
-    setPosition(x?: number, y?: number){
+    setPosition(x?: number, y?: number) {
         let deltaX = 0;
         let deltaY = 0;
-        if(x != undefined){
+        if (x != undefined) {
             let newoX = x - this.originX * this.width;
             deltaX = newoX - this.oX;
             this.x = x;
             this.oX = newoX;
         }
-        if(y != undefined){
+        if (y != undefined) {
             let newoY = y - this.originY * this.height;
             deltaY = newoY - this.oY;
             this.y = y;
@@ -244,10 +268,10 @@ export default class Counter {
         // Render texture digits position
         this.digitsArray.forEach((rt) => {
             rt.x += deltaX,
-            rt.y += deltaY
+                rt.y += deltaY
         });
         // Shade position
-        if(this.shade){
+        if (this.shade) {
             this.shadeOverlay.setPosition(this.oX, this.oY);
         }
         //Mask position
