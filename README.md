@@ -26,7 +26,7 @@ There are two alternatives:
 ```html
 <script src="localPath/analog-counter.umd.js">
 ``` 
-Then you can access the class by the global **ShapeRec**:
+Then you can access the class by the global **AnalogCounter**:
 ```javascript
 // In your create function ...
 const myCounter = new AnalogCounter(this, x, y); 
